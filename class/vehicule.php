@@ -54,8 +54,6 @@ class Vehicule {
         $stmt = $this->db->prepare($query);
         $stmt->execute();
     }
-
-    // pagination
     public function getvehiculee($start_from, $limit) {
         try {
             $sql = "SELECT * FROM vehicule LIMIT $start_from, $limit";
@@ -67,8 +65,6 @@ class Vehicule {
             return [];
         }
     }
-
-    // filtrage
     public function getCount($id_categorie = 0, $search = '') {
         $query = "SELECT COUNT(*) as total FROM vehicule";
         
@@ -85,7 +81,6 @@ class Vehicule {
         return $result['total'];
     }
 
-    // filtres et pagination
     public function getVehicules($id_categorie = 0, $search = '', $start_from = 0, $limit = 4) {
         $query = "SELECT * FROM vehicule";
         if ($id_categorie > 0) {

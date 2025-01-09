@@ -1,27 +1,26 @@
 <?php
-session_start();
-include './conexion.php';
-require './../class/reservation.php';
-require './../class/vehicule.php';
+
+require './conexion.php';
+require './../class/theme.php';
 
 $db = new Database();
-$Reservation = new Reservation($db); 
-$vehicule = new Vehicule($db); 
-$vehicules = $vehicule->getvehicule(); 
-$Reservations = $Reservation->getAllReservations();
+$theme = new Theme($db); 
+$themes = $theme->getTheme();
+
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard</title>
+    <title>Document</title>
     <link rel="stylesheet" href="input.css">
     <link rel="stylesheet" href="output.css">
 </head>
 <body>
-<nav class="bg-gray-800 ">
+    <nav class="bg-gray-800 ">
         <div class="container mx-auto px-4">
             <div class="flex items-center justify-between h-16">
             <!-- Logo -->
@@ -67,93 +66,88 @@ $Reservations = $Reservation->getAllReservations();
         </div>
     </nav>
 
-<div class="reservation-card bg-white border border-gray-300 rounded-lg shadow-lg p-6 hover:shadow-xl transition-transform transform hover:-translate-y-2">
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        <?php foreach ($Reservations as $Reservation): ?>
-        <div class="flex flex-col items-center text-center bg-white shadow-md rounded-lg p-4 transition-transform transform hover:scale-105">
-            <h3 class="text-lg font-bold text-gray-900 mb-2"><?=($Reservation['date']); ?></h3>
-            <p class="text-sm text-gray-600 mb-4">Lieu : <?=($Reservation['lieu']); ?></p>
-            <p class="text-sm text-gray-600 mb-4">Prix : <?=($Reservation['prix']); ?> DH</p>
-            <form action="avis_reservation.php" method="GET">
-                <input type="hidden" name="id_reservation" value="<?=($Reservation['id_reservation']); ?>">
-                <input type="hidden" name="id_user" value="<?=($_SESSION['id_user'] ?? ''); ?>">
-                <input type="hidden" name="id_vehicule" value="<?=($Reservation['id_vehicule']); ?>">
-                <button type="submit" name="avis" class="text-white bg-red-600 rounded-lg w-56 h-10 text-lg font-bold hover:bg-red-700 transition-colors">
-                    Votre avis
-                </button>
-            </form>
-        </div>
+    <div class="flex flex-wrap justify-center  mt-8 gap-10">
+        <?php foreach ($themes as $cat): ?>
+            <a href="theme_details.php?id_theme=<?php echo $cat['id_theme']; ?>" 
+            class="flex flex-col items-center text-center bg-white shadow-md rounded-lg p-4 transition-transform transform hover:scale-105 w-1 md:w-1/2 lg:w-1/3">
+                <h3 class="text-lg font-bold text-blue-600 mb-2"><?php echo ($cat['nom_theme']); ?></h3>
+                <p class="text-sm text-gray-600 mb-4"><?php echo ($cat['description']); ?></p>
+                <div class="mt-auto">
+                    <!-- <img src="<?php echo ($cat['images']); ?>" alt="vehicle-type-<?php echo strtolower($cat['nom_theme']); ?>" class="w-36 h-24 object-cover mx-auto"> -->
+                    <span class="mt-4 block text-blue-600 font-semibold hover:underline">Voir plus</span>
+                </div>
+            </a>
         <?php endforeach; ?>
+
     </div>
-</div>
 
     <footer class="bg-gray-800 text-gray-300 py-10 mt-12">
         <div class="container mx-auto px-4">
-            <!-- Section principale -->
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-10">
-            <!-- Logo et description -->
+        <!-- Main Section -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-10">
+            <!-- Logo and Description -->
             <div>
                 <h2 class="text-2xl font-bold text-white">
-                <a href="#" class="hover:text-amber-500">Voi<span class="text-blue-400">Ture</span></a>
+                    <a href="#" class="hover:text-amber-500">Voi<span class="text-blue-400">Ture</span></a>
                 </h2>
                 <p class="mt-4 text-gray-400">
-                Far far away, behind the word mountains, far from the countries Vokalia and Consonantia, there live the blind texts.
+                    Far far away, behind the word mountains, far from the countries Vokalia and Consonantia, there live the blind texts.
                 </p>
                 <ul class="flex space-x-4 mt-5">
-                <li><a href="#" class="text-gray-400 hover:text-white"><span class="icon-twitter"></span></a></li>
-                <li><a href="#" class="text-gray-400 hover:text-white"><span class="icon-facebook"></span></a></li>
-                <li><a href="#" class="text-gray-400 hover:text-white"><span class="icon-instagram"></span></a></li>
+                    <li><a href="#" class="text-gray-400 hover:text-white"><span class="icon-twitter"></span></a></li>
+                    <li><a href="#" class="text-gray-400 hover:text-white"><span class="icon-facebook"></span></a></li>
+                    <li><a href="#" class="text-gray-400 hover:text-white"><span class="icon-instagram"></span></a></li>
                 </ul>
             </div>
-            <!-- Section Information -->
+            <!-- Information Section -->
             <div>
                 <h2 class="text-lg font-bold text-white">Information</h2>
                 <ul class="mt-4 space-y-2">
-                <li><a href="#" class="hover:text-white">About</a></li>
-                <li><a href="#" class="hover:text-white">Services</a></li>
-                <li><a href="#" class="hover:text-white">Terms and Conditions</a></li>
-                <li><a href="#" class="hover:text-white">Best Price Guarantee</a></li>
-                <li><a href="#" class="hover:text-white">Privacy & Cookies Policy</a></li>
+                    <li><a href="#" class="hover:text-white">About</a></li>
+                    <li><a href="#" class="hover:text-white">Services</a></li>
+                    <li><a href="#" class="hover:text-white">Terms and Conditions</a></li>
+                    <li><a href="#" class="hover:text-white">Best Price Guarantee</a></li>
+                    <li><a href="#" class="hover:text-white">Privacy & Cookies Policy</a></li>
                 </ul>
             </div>
-            <!-- Section Support Client -->
+            <!-- Customer Support Section -->
             <div>
                 <h2 class="text-lg font-bold text-white">Customer Support</h2>
                 <ul class="mt-4 space-y-2">
-                <li><a href="#" class="hover:text-white">FAQ</a></li>
-                <li><a href="#" class="hover:text-white">Payment Option</a></li>
-                <li><a href="#" class="hover:text-white">Booking Tips</a></li>
-                <li><a href="#" class="hover:text-white">How it Works</a></li>
-                <li><a href="#" class="hover:text-white">Contact Us</a></li>
+                    <li><a href="#" class="hover:text-white">FAQ</a></li>
+                    <li><a href="#" class="hover:text-white">Payment Option</a></li>
+                    <li><a href="#" class="hover:text-white">Booking Tips</a></li>
+                    <li><a href="#" class="hover:text-white">How it Works</a></li>
+                    <li><a href="#" class="hover:text-white">Contact Us</a></li>
                 </ul>
             </div>
-            <!-- Section Questions -->
+            <!-- Questions Section -->
             <div>
                 <h2 class="text-lg font-bold text-white">Have a Question?</h2>
                 <ul class="mt-4 space-y-3">
-                <li class="flex items-start">
-                    <span class="icon-map-marker text-amber-500 mr-3"></span>
-                    <span>203 Fake St. Mountain View, San Francisco, California, USA</span>
-                </li>
-                <li class="flex items-start">
-                    <span class="icon-phone text-amber-500 mr-3"></span>
-                    <a href="tel:+23923929210" class="hover:text-white">+2 392 3929 210</a>
-                </li>
-                <li class="flex items-start">
-                    <span class="icon-envelope text-amber-500 mr-3"></span>
-                    <a href="mailto:info@yourdomain.com" class="hover:text-white">info@yourdomain.com</a>
-                </li>
+                    <li class="flex items-start">
+                        <span class="icon-map-marker text-amber-500 mr-3"></span>
+                        <span>203 Fake St. Mountain View, San Francisco, California, USA</span>
+                    </li>
+                    <li class="flex items-start">
+                        <span class="icon-phone text-amber-500 mr-3"></span>
+                        <a href="tel:+23923929210" class="hover:text-white">+2 392 3929 210</a>
+                    </li>
+                    <li class="flex items-start">
+                        <span class="icon-envelope text-amber-500 mr-3"></span>
+                        <a href="mailto:info@yourdomain.com" class="hover:text-white">info@yourdomain.com</a>
+                    </li>
                 </ul>
             </div>
-            </div>
-            <!-- Copyright -->
-            <div class="text-center border-t border-gray-700 pt-6">
+        </div>
+        <!-- Copyright -->
+        <div class="text-center border-t border-gray-700 pt-6">
             <p class="text-sm text-gray-400">
                 Copyright &copy;<script>document.write(new Date().getFullYear());</script> All rights reserved | This template is made with 
                 <i class="icon-heart text-amber-500"></i> by 
                 <a href="https://colorlib.com" target="_blank" class="hover:text-amber-500">Colorlib</a>
             </p>
-            </div>
+        </div>
         </div>
     </footer>
 </body>

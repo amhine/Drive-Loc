@@ -6,7 +6,6 @@ class Avis {
     private $id_vehicule;
     private $id_user;
 
-     // Constructeur pour la classe Avis
      public function __construct($db, $avisData = null) {
         $this->db = $db;
         if ($avisData) {
@@ -16,7 +15,6 @@ class Avis {
             $this->id_user = $avisData['id_user'];
         }
     }
-// Méthode pour obtenir le nom de l'utilisateur
         public function Nomutilisateur() {
             
             $sql = "SELECT u.nom_user AS Nom
@@ -52,7 +50,6 @@ class Avis {
         }
 
 
-    // Méthode pour ajouter un avis
     public function ajouterAvis($note, $id_vehicule, $id_user) {
         $note = intval($note); 
         $id_vehicule = intval($id_vehicule); 
@@ -63,7 +60,6 @@ class Avis {
         return $this->db->query($query);
     }
 
-    // Méthode pour obtenir les avis d'un véhicule spécifique
     public function getAvisParVehicule($id_vehicule) {
         $id_vehicule = intval($id_vehicule); 
         $query = "SELECT * FROM avis WHERE id_vehicule = $id_vehicule";
@@ -71,8 +67,6 @@ class Avis {
         
         return $stmt->fetchAll(PDO::FETCH_ASSOC); 
     }
-
-    // Méthode pour supprimer un avis
     public function supprimerAvis($id_avis) {
         $id_avis = intval($id_avis); 
         $query = "DELETE FROM avis WHERE id_avis = $id_avis";
@@ -80,7 +74,6 @@ class Avis {
         return $this->db->getConnection()->exec($query);
     }
 
-    // Méthode pour modifier un avis
     public function modifierAvis($id_avis, $note) {
         $id_avis = intval($id_avis); 
         $note = intval($note); 
@@ -89,7 +82,6 @@ class Avis {
         return $this->db->exec($query);
     }
 
-    // Méthode pour obtenir tous les avis
     public function getAllAvis() {
         try {
             $query = "SELECT * FROM avis";

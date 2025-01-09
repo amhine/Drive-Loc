@@ -1,27 +1,39 @@
 <?php
-session_start();
-include './conexion.php';
-require './../class/reservation.php';
-require './../class/vehicule.php';
+include './conexion.php'; 
+require './../class/article.php'; 
+require './../class/theme.php'; 
 
 $db = new Database();
-$Reservation = new Reservation($db); 
-$vehicule = new Vehicule($db); 
-$vehicules = $vehicule->getvehicule(); 
-$Reservations = $Reservation->getAllReservations();
+$theme = new Theme($db);
+$article = new Article($db);
+
+if (isset($_GET['id_theme'])) {
+    $id_theme = intval($_GET['id_theme']); 
+    $articles = $article->getarticleBytheme($id_theme);  
+
+    if (empty($articles)) {
+        $message = "Aucun article trouvé pour ce thème.";
+    }
+} else {
+    die("Aucun thème sélectionné.");
+}
 ?>
 
+
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
-    <meta charset="UTF-8">
+<meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard</title>
+    <title>Document</title>
+    
     <link rel="stylesheet" href="input.css">
     <link rel="stylesheet" href="output.css">
+    
+    <link href="https://unpkg.com/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 </head>
 <body>
-<nav class="bg-gray-800 ">
+    <nav class="bg-gray-800 ">
         <div class="container mx-auto px-4">
             <div class="flex items-center justify-between h-16">
             <!-- Logo -->
@@ -67,28 +79,54 @@ $Reservations = $Reservation->getAllReservations();
         </div>
     </nav>
 
-<div class="reservation-card bg-white border border-gray-300 rounded-lg shadow-lg p-6 hover:shadow-xl transition-transform transform hover:-translate-y-2">
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        <?php foreach ($Reservations as $Reservation): ?>
-        <div class="flex flex-col items-center text-center bg-white shadow-md rounded-lg p-4 transition-transform transform hover:scale-105">
-            <h3 class="text-lg font-bold text-gray-900 mb-2"><?=($Reservation['date']); ?></h3>
-            <p class="text-sm text-gray-600 mb-4">Lieu : <?=($Reservation['lieu']); ?></p>
-            <p class="text-sm text-gray-600 mb-4">Prix : <?=($Reservation['prix']); ?> DH</p>
-            <form action="avis_reservation.php" method="GET">
-                <input type="hidden" name="id_reservation" value="<?=($Reservation['id_reservation']); ?>">
-                <input type="hidden" name="id_user" value="<?=($_SESSION['id_user'] ?? ''); ?>">
-                <input type="hidden" name="id_vehicule" value="<?=($Reservation['id_vehicule']); ?>">
-                <button type="submit" name="avis" class="text-white bg-red-600 rounded-lg w-56 h-10 text-lg font-bold hover:bg-red-700 transition-colors">
-                    Votre avis
-                </button>
+
+
+        <div class="reservation-card bg-white border border-gray-300 rounded-lg shadow-lg p-6 hover:shadow-xl transition-transform transform hover:-translate-y-2">
+                    <div class="mt-6 text-right mb-5 text-xl font-bold">
+                            <a href="theme.php" class="text-blue-500 font-semibold hover:underline">Retour aux themes</a>
+                        </div>
+                    
+
+                        <div class=" ">
+                        <?php foreach ($articles as $article): ?>
+                            <div class="flex flex-col items-center text-center">
+            <h1 class="text-lg font-bold text-blue-600 mb-2"><?php echo ($article['titre']); ?></h1>
+            
+            <!-- Image with proper responsive handling -->
+            <img src="<?php echo ($article['image']); ?>" alt="vehicle-<?php echo ($article['titre']); ?>" class="object-cover h-96 w-full md:w-3/4 lg:w-3/4 xl:w-1/3 p-4 mx-auto mb-4 rounded-lg">
+
+            <p class="text-sm text-gray-600 mb-4 ">Créé le : <?php echo ($article['date_creation']); ?> </p>
+            <p class="text-sm text-gray-600 mb-4"><?php echo ($article['contrnue']); ?> </p>
+
+            <form action="reservation_vehicule.php" method="POST">
+                <input type="hidden" name="id_vehicule" value="<?php echo $article['id_article']; ?>">
+                <input type="hidden" name="id_user" value="<?php echo $_SESSION['id_user']; ?>"> 
+                
+                <div class="flex justify-evenly gap-48 mt-4">
+
+                    <button type="submit" class="text-white bg-blue-600 rounded-lg w-56 h-10 text-lg font-bold hover:bg-red-700 transition-colors">
+                        Commenter
+                    </button>
+                    
+                    <a href="comments.php?id_article=<?php echo $article['id_article']; ?>" class="block text-blue-600 font-semibold hover:underline">
+                        Voir les commentaires
+                    </a>
+
+                    <a href="add_favorite.php?id_article=<?php echo $article['id_article']; ?>" class="flex items-center">
+                        <img src="../img/favouri.png" alt="Ajouter aux favoris" class="h-10">
+                    </a>
+                </div>
             </form>
         </div>
-        <?php endforeach; ?>
-    </div>
-</div>
+<?php endforeach; ?>
 
-    <footer class="bg-gray-800 text-gray-300 py-10 mt-12">
-        <div class="container mx-auto px-4">
+            </div>
+                    </div>
+
+        </div>
+
+        <footer class="bg-gray-800 text-gray-300 py-10 mt-8">
+            <div class="container mx-auto px-4">
             <!-- Section principale -->
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-10">
             <!-- Logo et description -->
@@ -155,6 +193,6 @@ $Reservations = $Reservation->getAllReservations();
             </p>
             </div>
         </div>
-    </footer>
+    </footer>      
 </body>
 </html>

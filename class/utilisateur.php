@@ -7,13 +7,12 @@ class Utilisateur {
     }
 
     public function signup($nom, $email, $password, $role_id = 2) {
-        // Vérifier si l'email existe déjà
+       
         $check_email = $this->db->query("SELECT id_user FROM utilisateur WHERE email = '$email'");
         if($check_email->rowCount() > 0) {
             return "Cet email existe déjà";
         }
 
-        // Vérifier la force du mot de passe
         if(strlen($password) < 6) {
             return "Le mot de passe doit contenir au moins 8 caractères";
         }

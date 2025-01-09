@@ -1,14 +1,14 @@
 <?php
-include './conexion.php'; // Connexion à la base de données
-require './../class/vehicule.php'; // Classe pour gérer les véhicules
-require './../class/categorier.php'; // Classe pour gérer les catégories
+include './conexion.php'; 
+require './../class/vehicule.php'; 
+require './../class/categorier.php'; 
 
 $db = new Database();
 $vehicule = new Vehicule($db);
 $categorie = new Categorie($db);
 
 if (isset($_GET['id'])) {
-    $id_categorie = intval($_GET['id']); // Récupération sécurisée de l'ID
+    $id_categorie = intval($_GET['id']); 
     $vehicules = $vehicule->getVehiculesByCategorie($id_categorie);
 
     if (empty($vehicules)) {
@@ -30,7 +30,7 @@ if (isset($_GET['id'])) {
     <link rel="stylesheet" href="output.css">
 </head>
 <body>
-    <nav class="bg-gray-800 mb-8">
+<nav class="bg-gray-800 ">
         <div class="container mx-auto px-4">
             <div class="flex items-center justify-between h-16">
             <!-- Logo -->
@@ -51,22 +51,28 @@ if (isset($_GET['id'])) {
             
             <!-- Nav Links -->
             <div id="menu" class="hidden md:flex space-x-4">
-                <a href="index.php" class="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Home</a>
-                <a href="categorier.php" class="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium">categorier</a>
-                <a href="vehicule.php" class="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium">vehicule</a>
-                <a href="reservation.php" class="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium">reservation</a>
-                <a href="avis.php" class="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium">avis</a>
-            </div>
+            <a href="index.php" class="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Home</a>
+            <a href=" categorier.php" class="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Categorier</a>
+            <a href="vehicule.php" class="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Vehicule</a>
+            <a href="reservation.php" class="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Reservation</a>
+            <a href="avis.php" class="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Avis</a>
+            <a href="theme.php" class="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Théme</a>
+            <a href="article.php" class="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Article</a>
+            <a href="fave.php" class="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Favoris</a>
+       </div>
             </div>
         </div>
     
         <!-- Mobile Menu -->
         <div id="mobile-menu" class="hidden md:hidden bg-gray-800">
             <a href="index.php" class="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Home</a>
-            <a href=" categorier.php" class="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium">categorier</a>
-            <a href="vehicule.php" class="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium">vehicule</a>
-            <a href="reservation.php" class="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium">reservation</a>
-            <a href="avis.php" class="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium">avis</a>
+            <a href=" categorier.php" class="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Categorier</a>
+            <a href="vehicule.php" class="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Vehicule</a>
+            <a href="reservation.php" class="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Reservation</a>
+            <a href="avis.php" class="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Avis</a>
+            <a href="theme.php" class="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Théme</a>
+            <a href="article.php" class="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Article</a>
+            <a href="fave.php" class="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Favoris</a>
         </div>
     </nav>
 

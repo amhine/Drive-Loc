@@ -8,12 +8,9 @@ class Categorie {
     public $description;
     public $image;
 
-    // Constructeur pour initialiser la connexion à la base de données
     public function __construct($connect) {
         $this->connect = $connect;
     }
-
-    // Récupérer toutes les catégories
     public function getCategories() {
         try {
             $sql = "SELECT * FROM categorie";
@@ -26,7 +23,6 @@ class Categorie {
         }
     }
 
-    // Récupérer une catégorie par son ID
     public function getCategorieById($id) {
         try {
             $sql = "SELECT * FROM categorie WHERE id_categorie = :id";
@@ -47,7 +43,6 @@ class Categorie {
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    // Ajouter une nouvelle catégorie
     public function addCategorie($nom, $description, $image) {
         try {
             $sql = "INSERT INTO categorie (nom, description, image) VALUES (:nom, :description, :image)";
@@ -61,7 +56,6 @@ class Categorie {
         }
     }
 
-    // Mettre à jour une catégorie existante
     public function updateCategorie($id, $nom, $description, $image) {
         try {
             $sql = "UPDATE categorie SET nom = :nom, description = :description, image = :image WHERE id_categorie = :id";
@@ -76,7 +70,6 @@ class Categorie {
         }
     }
 
-    // Supprimer une catégorie
     public function deleteCategorie($id) {
         try {
             $sql = "DELETE FROM categorie WHERE id_categorie = :id";

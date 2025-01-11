@@ -38,12 +38,14 @@ class Theme {
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public function getthemeById($id_theme) {
-        $id_theme = $id_theme; 
-        
-        $query = "SELECT * FROM theme WHERE id_theme = $id_theme";
-        return $this->connect->query($query)->fetch(PDO::FETCH_ASSOC);
+    public function getThemeById($id_theme) {
+        $query = "SELECT * FROM theme WHERE id_theme = :id_theme";
+        $stmt = $this->connect->prepare($query);
+        $stmt->bindParam(':id_theme', $id_theme, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetch(PDO::FETCH_ASSOC);
     }
+    
 
     public function updatetheme($id_theme, $new_nom_theme,$new_description) {
         $query = "UPDATE theme SET nom_theme = :new_nom_theme, description = :new_description WHERE id_theme = :id_theme";

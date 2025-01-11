@@ -1,73 +1,50 @@
+
 <?php
 class Tag {
     private $conn;
+
     public $id_tag;
     public $nom_tag;
 
-    // Constructeur
     public function __construct($db) {
         $this->conn = $db;
     }
 
     public function create() {
-        $query = "INSERT INTO tag  (nom_tag) VALUES (:nom_tag)";
-
+        $query = "INSERT INTO `tag`( `nom_tag`) VALUES (:nom_tag)";
         $stmt = $this->conn->prepare($query);
-        $stmt->bindParam(':nom_tag', $this->nom_tag);
+
+        $stmt->bindParam(":nom_tag", $this->nom_tag);
+
         if ($stmt->execute()) {
             return true;
         }
-
         return false;
     }
 
-    // Lire tous les tags
-    public function read() {
-        $query = "SELECT id_tag, nom_tag FROM tag" ;
+    public function getAll() {
+        $query = "SELECT * FROM tag" ;
         $stmt = $this->conn->prepare($query);
         $stmt->execute();
-
         return $stmt;
     }
 
-    // Lire un tag par son ID
-    public function readOne() {
-        $query = "SELECT id_tag, nom_tag FROM tag WHERE id_tag = :id_tag";
+    public function getNom() {
+        $query = " SELECT nom_tag FROM `tag` " ;
         $stmt = $this->conn->prepare($query);
-        $stmt->bindParam(":id_tag", $this->id_tag);
         $stmt->execute();
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
-        if ($row) {
-            $this->nom_tag = $row['nom_tag'];
-            return true;
-        }
-
-        return false;
+        return $stmt;
     }
-
-    // Mettre à jour un tag
-    public function update() {
-        $query = "UPDATE tag SET nom_tag = :nom_tag WHERE id_tag = :id_tag";
+    public function getTagsByArticleId($id_article) {
+        $query = "SELECT tag.nom_tag
+                  FROM tag 
+                  INNER JOIN articletag  ON tag.id_tag = articletag.id_tag
+                  WHERE articletag.id_article = :id_article";
         $stmt = $this->conn->prepare($query);
-        $stmt->bindParam(':nom_tag', $this->nom_tag);
-        $stmt->bindParam(':id_tag', $this->id_tag);
-        if ($stmt->execute()) {
-            return true;
-        }
-
-        return false;
+        $stmt->bindParam(':id_article', $id_article, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
-
-    // Supprimer un tag
-    public function delete() {
-        $query = "DELETE FROM tag WHERE id_tag = :id_tag";
-        $stmt = $this->conn->prepare($query);
-        $stmt->bindParam(":id_tag", $this->id_tag);
-        if ($stmt->execute()) {
-            return true;
-        }
-
-        return false;
-    }
+    
 }
 ?>

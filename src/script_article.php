@@ -1,36 +1,54 @@
 <?php
-include './conexion.php'; 
-require './../class/article.php';  
-require './../class/tags.php'; 
-$db = new Database();
-$article = new Article($db);
-$tags = new Tag($db);
-$date_creation = date('Y-m-d H:i:s');
+require './conexion.php';
+require './../class/article.php';
+require './../class/articletag.php';
 
-// Traitement de l'ajout de l'article
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $titre = $_POST['titre'];
-    $contrnue = $_POST['contrnue'];
-    $image = $_POST['image'];
-    $id_theme = $_POST['id_theme'];
-    $id_tag = $_POST['id_tag']; // Ajout du tag sélectionné
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if (isset($_POST['titre'], $_POST['contrnue'], $_POST['id_theme'], $_POST['id_tag'])) {
+        $image = $_POST['image'];
+        $titre = $_POST['titre'];
+        $contrnue = $_POST['contrnue'];
+        $id_theme = $_POST['id_theme'];
+        $id_tags = array_unique($_POST['id_tag']);  
+        $date_creation = date('Y-m-d H:i:s');
+        if (empty($id_tags)) {
+            echo "Aucun tag sélectionné.";
+            exit();
+        }
+        $database = new Database();
+        $db = $database->getConnection();
 
-    // Validation des champs du formulaire
-    if (!empty($titre) && !empty($contrnue) && !empty($image) && !empty($id_theme) && !empty($id_tag)) {
-        // Ajouter l'article et la relation avec le tag
-        $result = $article->addArticleWithTag($image, $titre, $contrnue, $id_theme, $id_tag, 'en_attente');
-        
-        // Vérifier si l'ajout s'est bien passé
-        if ($result) {
-            // Rediriger l'utilisateur vers la page des articles
-            header("Location: article.php");
+        if (!$db) {
+            echo "Erreur de connexion à la base de données.";
+            exit();
+        }
+        $article = new Article($db);
+        $article->titre = $titre;
+        $article->image = $image;
+        $article->contrnue = $contrnue;
+        $article->id_theme = $id_theme;
+        $article->statut = 'en_attente'; 
+        $article->date_creation = $date_creation; 
+        if ($article->create()) {
+            $id_article = $db->lastInsertId();
+            echo "Article ajouté avec succès. ID de l'article : $id_article";
+            $articletag = new ArticleTag($db);
+            foreach ($id_tags as $id_tag) {
+                $articletag->id_article = $id_article;
+                $articletag->id_tag = $id_tag;
+                if (!$articletag->create()) {
+                    echo "Erreur lors de l'ajout de la relation dans articletag.";
+                    exit();
+                }
+            }
+            header('Location: article.php');
             exit();
         } else {
-            // Afficher un message d'erreur si l'insertion échoue
             echo "Erreur lors de l'ajout de l'article.";
         }
+        
     } else {
-        echo "Veuillez remplir tous les champs.";
+        echo "Données manquantes dans le formulaire.";
     }
 }
 ?>

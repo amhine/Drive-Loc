@@ -17,6 +17,28 @@ class Article {
     public function __construct($connect) {
         $this->connect = $connect;
     }
+
+    public function create() {
+        $query = "INSERT INTO article (titre, image, contrnue, id_theme, statut, date_creation) 
+                  VALUES (:titre, :image, :contrnue, :id_theme, :statut, :date_creation)";
+    
+        $stmt = $this->connect->prepare($query);
+    
+        $stmt->bindParam(":titre", $this->titre);
+        $stmt->bindParam(":image", $this->image);
+        $stmt->bindParam(":contrnue", $this->contrnue);
+        $stmt->bindParam(":id_theme", $this->id_theme);
+        $stmt->bindParam(":statut", $this->statut);
+        $stmt->bindParam(":date_creation", $this->date_creation);
+    
+        if ($stmt->execute()) {
+            return true;
+        } else {
+            print_r($stmt->errorInfo());
+            return false;
+        }
+    }
+    
     public function getArticle() {
         try {
             $sql = "SELECT * FROM article " ;
@@ -204,6 +226,7 @@ class Article {
     }
   
     
+    
     public function getArticlesByTheme($id_theme, $offset, $limit) {
         $query = "SELECT * FROM article WHERE id_theme = :id_theme LIMIT :offset, :limit";
         $stmt = $this->connect->prepare($query);
@@ -212,7 +235,6 @@ class Article {
         $stmt->bindParam(':limit', $limit, PDO::PARAM_INT);
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
-
     }
    
     

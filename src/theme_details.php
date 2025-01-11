@@ -98,7 +98,7 @@ if (isset($_GET['id_theme'])) {
             <p class="text-sm text-gray-600 mb-4 ">Créé le : <?php echo ($article['date_creation']); ?> </p>
             <p class="text-sm text-gray-600 mb-4"><?php echo ($article['contrnue']); ?> </p>
 
-            <form action="reservation_vehicule.php" method="POST">
+            <form action="commentaire.php" method="POST">
                 <input type="hidden" name="id_vehicule" value="<?php echo $article['id_article']; ?>">
                 <input type="hidden" name="id_user" value="<?php echo $_SESSION['id_user']; ?>"> 
                 

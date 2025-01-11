@@ -1,45 +1,56 @@
-
-
 <?php
-session_start(); 
+session_start();
 require './conexion.php';
 require './../class/comentaire.php';
 require './../class/article.php';
+require './../class/theme.php';
 
 $db = new Database();
 $article = new Article($db); 
 $commentaire = new Commentaire($db);
+$theme=new Theme($db);
 
 if (!isset($_SESSION['id_user'])) {
     echo "L'utilisateur n'est pas connecté.";
     exit();
 }
-
 $id_user = $_SESSION['id_user']; 
 
-
-
-
-
-$articles = $article->getArticle();
 $articles_per_page = isset($_GET['articles_per_page']) ? (int)$_GET['articles_per_page'] : 5;
-
 $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
 $offset = ($page - 1) * $articles_per_page;
-
-$articles = $article->getArticlesPaginated($offset, $articles_per_page);
 
 
 $total_articles = $article->getTotalArticles();
 $total_pages = ceil($total_articles / $articles_per_page);
 
 
+$themes=$theme->getTheme();
+$search = isset($_GET['search']) ? $_GET['search'] : '';
+$id_theme = isset($_GET['id_theme']) ? (int)$_GET['id_theme'] : 0;
 
+$articles_per_page = isset($_GET['articles_per_page']) ? (int)$_GET['articles_per_page'] : 5;
+$page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+$offset = ($page - 1) * $articles_per_page;
 
+$total_articles = $article->getTotalArticles();
+$total_pages = ceil($total_articles / $articles_per_page);
 
+$themes = $theme->getTheme();
+
+if ($search) {
+    $articles = $article->searchArticlesByTitle($search);
+} else {
+    if ($id_theme != 0) {
+        $articles = $article->getArticlesByTheme($id_theme, $offset, $articles_per_page);
+    } else {
+        $articles = $article->getArticlesPaginated($offset, $articles_per_page);
+    }
+}
 
 
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -107,14 +118,32 @@ $total_pages = ceil($total_articles / $articles_per_page);
     </div>
 
         <!-- Formulaire de recherche -->
-    <div class="flex justify-end my-4 mr-6">
-        <form action="" method="GET" class="flex items-center space-x-2">
-            <input type="text" name="search" id="search" placeholder="Rechercher par nom" class="px-4 py-2 border border-gray-300 rounded-md" value="<?=($search); ?>">
-            <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">
-                <i class="fa-solid fa-search"></i>
-            </button>
-        </form>
-    </div>
+    
+        <div class="flex justify-end my-4 mr-6">
+            <form action="" method="GET" class="flex items-center space-x-2">
+                <input type="text" name="search" id="search" placeholder="Rechercher par titre" class="px-4 py-2 border border-gray-300 rounded-md" value="<?= isset($_GET['search']) ? htmlspecialchars($_GET['search']) : ''; ?>">
+                <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">
+                    <i class="fa-solid fa-search"></i>
+                </button>
+            </form>
+        </div>
+
+          <!-- Filtrage par theme -->
+        <div class="flex justify-center my-4">
+            <form action="article.php" method="GET" class="flex items-center space-x-2">
+                <select id="category-filter" name="id_theme" class="px-4 py-2 border border-r-teal-950 rounded-md" onchange="this.form.submit()">
+                    <option value="0">Sélectionner une theme</option>
+                    <?php foreach ($themes as $theme): ?>
+                        <option value="<?php echo $theme['id_theme']; ?>" <?php echo ($id_theme == $theme['id_theme']) ? 'selected' : ''; ?>>
+                            <?php echo $theme['nom_theme']; ?>
+                        </option>
+                    <?php endforeach; ?>
+                </select>
+            
+            </form>
+        </div>
+        
+
 
     <form method="GET" class="m-4">
         <select name="articles_per_page" id="articles_per_page" class="border rounded-md px-3 py-2">
@@ -129,6 +158,7 @@ $total_pages = ceil($total_articles / $articles_per_page);
     <div id="vehicles-container" class="reservation-card bg-white border border-gray-300 rounded-lg shadow-lg p-6 hover:shadow-xl transition-transform transform hover:-translate-y-2">
         <div class="space-y-6">
             <?php foreach ($articles as $article):
+            if ($article['statut'] === 'accepte'):
             ?>
             
 
@@ -181,7 +211,10 @@ $total_pages = ceil($total_articles / $articles_per_page);
 
                     </div>
                 </div>
-                <?php endforeach; ?>
+                
+                <?php 
+                
+             endforeach; ?>
                 
         </div>
                    
@@ -205,8 +238,12 @@ $total_pages = ceil($total_articles / $articles_per_page);
                 </form>
             </div>
         </div>
-        <?php endforeach; ?>
+        <?php endif; ?>
+        <?php
+    //  endif;
+      endforeach; ?>
     </div>
+    
 </div>
 
 <div class="flex justify-center items-center space-x-2 mt-8">

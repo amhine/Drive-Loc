@@ -24,8 +24,8 @@ class Favorites {
 
         $query = "INSERT INTO favories (id_user, id_article) VALUES (:id_user, :id_article)";
         $stmt = $this->conn->prepare($query);
-        $stmt->bindParam(':id_user', $id_user, PDO::PARAM_INT);
-        $stmt->bindParam(':id_article', $id_article, PDO::PARAM_INT);
+        $stmt->bindParam(':id_user', $id_user);
+        $stmt->bindParam(':id_article', $id_article);
         return $stmt->execute(); 
     }
 

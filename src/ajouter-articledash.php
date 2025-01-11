@@ -20,8 +20,8 @@ require './../class/tags.php';
 <body  class="bg-gray-100 flex justify-center items-center min-h-screen m-0">
     <div class="container">
 
-        <!-- Formulaire pour ajouter -->
-        <form action="script_article.php" method="POST" id="add">
+        <!-- Formulaire pour ajouter une catégorie -->
+        <form action="script-article-dash.php" method="POST" id="add">
             <div class="max-w-[800px] w-full max-h-[500px] bg-white rounded-lg shadow-lg overflow-y-scroll ">
                 <div class="px-8 py-4 bg-blue-400 text-white">
                     <h1 class="flex justify-center font-bold text-white text-3xl">Article</h1>
@@ -79,7 +79,7 @@ require './../class/tags.php';
                    
 
                     <div class="flex justify-between mt-8">
-                        <a href="article.php" class="text-white bg-red-600 w-40 rounded-lg py-3 hover:bg-red-800 cursor-pointer flex justify-center">
+                        <a href="dashbord.php" class="text-white bg-red-600 w-40 rounded-lg py-3 hover:bg-red-800 cursor-pointer flex justify-center">
                             Cancel
                         </a>
                         <button type="submit" class="text-white bg-blue-600 w-40 rounded-lg py-3 hover:bg-blue-800 cursor-pointer">
